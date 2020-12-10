@@ -1,0 +1,26 @@
+@EndUserText.label : 'Transaction Table for ASN Items'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zasn_item {
+  key client     : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key asn_number : zchar10 not null
+    with foreign key zasn_head
+      where asn_number = zasn_item.asn_number;
+  @AbapCatalog.foreignKey.screenCheck : false
+  po_number      : zchar10
+    with foreign key zpo_head
+      where po_number = zasn_item.po_number;
+  @AbapCatalog.foreignKey.screenCheck : false
+  po_item        : zchar10
+    with foreign key zpo_head
+      where po_number = zasn_item.po_item;
+  @AbapCatalog.foreignKey.screenCheck : false
+  upc            : zchar10
+    with foreign key zproduct
+      where upc = zasn_item.upc;
+  asn_qty        : int4;
+
+}
