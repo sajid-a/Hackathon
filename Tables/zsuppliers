@@ -1,0 +1,13 @@
+@EndUserText.label : 'Master Table for Suppliers'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zsuppliers {
+  key client          : abap.clnt not null;
+  key supplier_code   : zchar10 not null;
+  name                : zchar40;
+  avg_lead_time       : int4;
+  avg_price_variation : int4;
+
+}
