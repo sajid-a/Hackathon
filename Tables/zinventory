@@ -1,0 +1,15 @@
+@EndUserText.label : 'Inventory Snapshot'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zinventory {
+  key client     : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key upc        : zchar10 not null
+    with foreign key zproduct
+      where upc = zinventory.upc;
+  key stock_type : zchar10 not null;
+  stock          : int4;
+
+}
