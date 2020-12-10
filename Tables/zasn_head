@@ -1,0 +1,17 @@
+@EndUserText.label : 'Transaction Table for ASN Header'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zasn_head {
+  key client     : abap.clnt not null;
+  key asn_number : zchar10 not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  supplier_code  : zchar10
+    with foreign key zsuppliers
+      where supplier_code = zasn_head.supplier_code;
+  asn_date       : abap.dats;
+  destination    : zchar40;
+  expected_gr    : abap.dats;
+
+}
