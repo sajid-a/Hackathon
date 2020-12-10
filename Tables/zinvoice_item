@@ -1,0 +1,27 @@
+@EndUserText.label : 'Transaction Table for Invoice Items'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zinvoice_item {
+  key client         : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key invoice_number : zchar10 not null
+    with foreign key zinvoice_head
+      where invoice_number = zinvoice_item.invoice_number;
+  key invoice_item   : abap.numc(6) not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  upc                : zchar10
+    with foreign key zproduct
+      where upc = zinvoice_item.upc;
+  qty                : int4;
+  @AbapCatalog.foreignKey.screenCheck : false
+  po_number          : zchar10
+    with foreign key zpo_head
+      where po_number = zinvoice_item.po_number;
+  po_item            : abap.numc(6);
+  @Semantics.amount.currencyCode : 'zinvoice_item.currency'
+  invoice_cost       : abap.curr(10,2);
+  currency           : abap.cuky;
+
+}
