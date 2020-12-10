@@ -1,0 +1,24 @@
+@EndUserText.label : 'Transaction Table for GR Item'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zgr_item {
+  key client    : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key gr_number : zchar10 not null
+    with foreign key zgr_head
+      where gr_number = zgr_item.gr_number;
+  key gr_item   : abap.numc(6) not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  po_number     : zchar10
+    with foreign key zpo_item
+      where po_numer = zgr_item.po_number;
+  po_item       : abap.numc(6);
+  gr_qty        : int4;
+  @AbapCatalog.foreignKey.screenCheck : false
+  upc           : zchar10
+    with foreign key zproduct
+      where upc = zgr_item.upc;
+
+}
