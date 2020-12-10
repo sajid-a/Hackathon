@@ -1,0 +1,16 @@
+@EndUserText.label : 'Transaction Table for GR Head'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zgr_head {
+  key client    : abap.clnt not null;
+  key gr_number : zchar10 not null;
+  creation_date : abap.dats;
+  gr_date       : abap.dats;
+  @AbapCatalog.foreignKey.screenCheck : false
+  supplier_code : zchar10
+    with foreign key zsuppliers
+      where supplier_code = zgr_head.supplier_code;
+
+}
