@@ -1,0 +1,16 @@
+@EndUserText.label : 'Transaction Table for Purchase Order Header'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zpo_head {
+  key client    : abap.clnt not null;
+  key po_number : zchar10 not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  supplier_code : zchar10
+    with foreign key zsuppliers
+      where supplier_code = zpo_head.supplier_code;
+  po_date       : abap.dats;
+  destination   : zchar40;
+
+}
