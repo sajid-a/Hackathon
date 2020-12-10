@@ -1,0 +1,22 @@
+@EndUserText.label : 'Transaction Table for Purchase Order Items'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zpo_item {
+  key client   : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key po_numer : zchar10 not null
+    with foreign key zpo_head
+      where po_number = zpo_item.po_numer;
+  key po_item  : abap.numc(6) not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  upc          : zchar10
+    with foreign key zproduct
+      where upc = zpo_item.upc;
+  qty          : int4;
+  del_date     : abap.dats;
+  price        : abap.int4;
+  currency     : abap.cuky;
+
+}
