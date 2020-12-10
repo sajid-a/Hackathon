@@ -1,0 +1,16 @@
+@EndUserText.label : 'Transaction Table for Invoice Header'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zinvoice_head {
+  key client         : abap.clnt not null;
+  key invoice_number : zchar10 not null;
+  invoice_date       : abap.dats;
+  status             : zchar10;
+  @AbapCatalog.foreignKey.screenCheck : false
+  supplier_code      : zchar10
+    with foreign key zsuppliers
+      where supplier_code = zinvoice_head.supplier_code;
+
+}
