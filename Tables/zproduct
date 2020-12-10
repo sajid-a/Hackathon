@@ -1,0 +1,12 @@
+@EndUserText.label : 'Master Table for Products'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zproduct {
+  key client : abap.clnt not null;
+  key upc    : zchar10 not null;
+  name       : zchar40;
+  type       : zchar10;
+
+}
