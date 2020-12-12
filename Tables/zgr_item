@@ -13,7 +13,7 @@ define table zgr_item {
   @AbapCatalog.foreignKey.screenCheck : false
   po_number     : zchar10
     with foreign key zpo_item
-      where po_numer = zgr_item.po_number;
+      where po_number = zgr_item.po_number;
   po_item       : abap.numc(6);
   gr_qty        : int4;
   @AbapCatalog.foreignKey.screenCheck : false
