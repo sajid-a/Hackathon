@@ -1,22 +1,288 @@
-@EndUserText.label : 'Transaction Table for Purchase Order Items'
-@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
-@AbapCatalog.tableCategory : #TRANSPARENT
-@AbapCatalog.deliveryClass : #A
-@AbapCatalog.dataMaintenance : #RESTRICTED
-define table zpo_item {
-  key client   : abap.clnt not null;
-  @AbapCatalog.foreignKey.screenCheck : false
-  key po_numer : zchar10 not null
-    with foreign key zpo_head
-      where po_number = zpo_item.po_numer;
-  key po_item  : abap.numc(6) not null;
-  @AbapCatalog.foreignKey.screenCheck : false
-  upc          : zchar10
-    with foreign key zproduct
-      where upc = zpo_item.upc;
-  qty          : int4;
-  del_date     : abap.dats;
-  price        : abap.int4;
-  currency     : abap.cuky;
+CLASS zcl_generate_test_data DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-}
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_generate_test_data IMPLEMENTATION.
+
+  METHOD if_oo_adt_classrun~main.
+
+    ".. Declare tables
+    DATA: lt_zsuppliers    TYPE TABLE OF zsuppliers,
+          lt_zproduct      TYPE TABLE OF zproduct,
+          lt_zasn_head     TYPE TABLE OF zasn_head,
+          lt_zasn_item     TYPE TABLE OF zasn_item,
+          lt_zgr_head      TYPE TABLE OF zgr_head,
+          lt_zgr_item      TYPE TABLE OF zgr_item,
+          lt_zinventory    TYPE TABLE OF zinventory,
+          lt_zinvoice_head TYPE TABLE OF zinvoice_head,
+          lt_zinvoice_item TYPE TABLE OF zinvoice_item,
+          lt_zpo_head      TYPE TABLE OF zpo_head,
+          lt_zpo_item      TYPE TABLE OF zpo_item.
+
+    ".. Suppliers
+    ".. Fill internal table
+    lt_zsuppliers = VALUE #( ( supplier_code       = 'S001'
+                               name                = 'ABC Inc'
+                               avg_lead_time       = 60
+                               avg_price_variation = 10 )
+                               
+                             ( supplier_code       = 'S002'
+                               name                = 'Vedanta Tech'
+                               avg_lead_time       = 60
+                               avg_price_variation = 10 ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers| ).
+    ENDIF.
+    
+    ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( upc  = 'P001'
+                             name = 'Full Shirt'
+                             type = 'FMCG' )
+                             
+                           ( upc  = 'P002'
+                             name = 'T-Shirt'
+                             type = 'FMCG' ).
+    ".. Delete existing data
+    DELETE FROM zproduct.
+    ".. Insert new data
+    INSERT zproduct FROM TABLE @lt_zproducts.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } products inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing products.| ).
+    ENDIF.   
+    
+    ".. Inventory
+    ".. Fill internal table
+    lt_zinventory = VALUE #( ( upc        = 'P001'
+                               stock_type = 'UR'
+                               stock      = 1200 )
+                               
+                             ( upc        = 'P002'
+                               stock_type = 'UR'
+                               stock      = 3400 ) ).
+    ".. Delete existing data
+    DELETE FROM zinventory.
+    ".. Insert new data
+    INSERT zinventory FROM TABLE @lt_zinventory.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } inventory inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing inventory.| ).
+    ENDIF.   
+    
+    ".. PO Head
+    ".. Fill internal table
+    lt_zpo_head = VALUE #( ( po_number     = 'PO001'
+                             supplier_code = 'S001'
+                             po_date       = '20201201'
+                             destination   = 'Mumbai' )
+                             
+                           ( po_number     = 'PO002'
+                             supplier_code = 'S001'
+                             po_date       = '20201210'
+                             destination   = 'Chennai' )
+                             
+                           ( po_number     = 'PO003'
+                             supplier_code = 'S002'
+                             po_date       = '20201211'
+                             destination   = 'Mumbai' )
+                             
+                           ( po_number     = 'PO004'
+                             supplier_code = 'S002'
+                             po_date       = '20201101'
+                             destination   = 'Chennai' ) ).
+    ".. Delete existing data
+    DELETE FROM zpo_head.
+    ".. Insert new data
+    INSERT zpo_head FROM TABLE @lt_zpo_head.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } PO Head inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing PO Head.| ).
+    ENDIF.   
+    
+    ".. PO Items
+    ".. Fill internal table
+    lt_zpo_item = VALUE #( ( po_number = 'PO001'
+                             po_item   = '000001'
+                             upc       = 'P001'
+                             qty       = 300
+                             del_date  = '20210201'
+                             price     = 20
+                             currency  = EUR )
+                             
+                           ( po_number = 'PO001'
+                             po_item   = '000002'
+                             upc       = 'P002'
+                             qty       = 150
+                             del_date  = '20210201'
+                             price     = 25
+                             currency  = EUR ) ).
+    ".. Delete existing data
+    DELETE FROM zpo_item.
+    ".. Insert new data
+    INSERT zpo_item FROM TABLE @lt_zpo_item.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } PO Items inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing PO Items| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+    
+        ".. Products
+    ".. Fill internal table
+    lt_zproduct = VALUE #( ( )
+                             (  ) ).
+    ".. Delete existing data
+    DELETE FROM zsuppliers.
+    ".. Insert new data
+    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing suppliers/| ).
+    ENDIF.   
+     
+  ENDMETHOD.
+
+ENDCLASS.
