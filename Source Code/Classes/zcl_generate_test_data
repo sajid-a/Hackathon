@@ -128,8 +128,21 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
     
     ".. PO Items
     ".. Fill internal table
-    lt_zpo_item = VALUE #( ( )
-                             (  ) ).
+    lt_zpo_item = VALUE #( ( po_number = 'PO001'
+                             po_item   = '000001'
+                             upc       = 'P001'
+                             qty       = 300
+                             del_date  = '20210201'
+                             price     = 20
+                             currency  = EUR )
+                             
+                           ( po_number = 'PO001'
+                             po_item   = '000002'
+                             upc       = 'P002'
+                             qty       = 150
+                             del_date  = '20210201'
+                             price     = 25
+                             currency  = EUR ) ).
     ".. Delete existing data
     DELETE FROM zpo_item.
     ".. Insert new data
