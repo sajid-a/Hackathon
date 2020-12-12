@@ -34,6 +34,7 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
                                name                = 'ABC Inc'
                                avg_lead_time       = 60
                                avg_price_variation = 10 )
+                               
                              ( supplier_code       = 'S002'
                                name                = 'Vedanta Tech'
                                avg_lead_time       = 60
@@ -55,6 +56,7 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
     lt_zproduct = VALUE #( ( upc  = 'P001'
                              name = 'Full Shirt'
                              type = 'FMCG' )
+                             
                            ( upc  = 'P002'
                              name = 'T-Shirt'
                              type = 'FMCG' ).
@@ -70,14 +72,19 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
       out->write( |Error writing products.| ).
     ENDIF.   
     
-        ".. Products
+    ".. Inventory
     ".. Fill internal table
-    lt_zinventory = VALUE #( ( )
-                             (  ) ).
+    lt_zinventory = VALUE #( ( upc        = 'P001'
+                               stock_type = 'UR'
+                               stock      = 1200 )
+                               
+                             ( upc        = 'P002'
+                               stock_type = 'UR'
+                               stock      = 3400 ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zinventory.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zinventory.
+    INSERT zinventory FROM TABLE @lt_zinventory.
     IF sy-subrc = 0.
       ".. Print success message
       out->write( |{ sy-dbcnt } inventory inserted successfully!| ).
@@ -86,36 +93,53 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
       out->write( |Error writing inventory.| ).
     ENDIF.   
     
-        ".. Products
+    ".. PO Head
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zpo_head = VALUE #( ( po_number     = 'PO001'
+                             supplier_code = 'S001'
+                             po_date       = '20201201'
+                             destination   = 'Mumbai' )
+                             
+                           ( po_number     = 'PO002'
+                             supplier_code = 'S001'
+                             po_date       = '20201210'
+                             destination   = 'Chennai' )
+                             
+                           ( po_number     = 'PO003'
+                             supplier_code = 'S002'
+                             po_date       = '20201211'
+                             destination   = 'Mumbai' )
+                             
+                           ( po_number     = 'PO004'
+                             supplier_code = 'S002'
+                             po_date       = '20201101'
+                             destination   = 'Chennai' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zpo_head.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zpo_head FROM TABLE @lt_zpo_head.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } PO Head inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
+      out->write( |Error writing PO Head.| ).
     ENDIF.   
     
-        ".. Products
+    ".. PO Items
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
+    lt_zpo_item = VALUE #( ( )
                              (  ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zpo_item.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zpo_item FROM TABLE @lt_zpo_item.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } PO Items inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
+      out->write( |Error writing PO Items| ).
     ENDIF.   
     
         ".. Products
