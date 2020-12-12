@@ -9,6 +9,7 @@ define table zasn_item {
   key asn_number : zchar10 not null
     with foreign key zasn_head
       where asn_number = zasn_item.asn_number;
+  key asn_item   : abap.numc(6) not null;
   @AbapCatalog.foreignKey.screenCheck : false
   po_number      : zchar10
     with foreign key zpo_head
