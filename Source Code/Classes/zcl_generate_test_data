@@ -34,7 +34,7 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
                                name                = 'ABC Inc'
                                avg_lead_time       = 60
                                avg_price_variation = 10 )
-                               
+
                              ( supplier_code       = 'S002'
                                name                = 'Vedanta Tech'
                                avg_lead_time       = 60
@@ -50,34 +50,34 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
       ".. Print success message
       out->write( |Error writing suppliers| ).
     ENDIF.
-    
+
     ".. Products
     ".. Fill internal table
     lt_zproduct = VALUE #( ( upc  = 'P001'
                              name = 'Full Shirt'
                              type = 'FMCG' )
-                             
+
                            ( upc  = 'P002'
                              name = 'T-Shirt'
-                             type = 'FMCG' ).
+                             type = 'FMCG' ) ).
     ".. Delete existing data
     DELETE FROM zproduct.
     ".. Insert new data
-    INSERT zproduct FROM TABLE @lt_zproducts.
+    INSERT zproduct FROM TABLE @lt_zproduct.
     IF sy-subrc = 0.
       ".. Print success message
       out->write( |{ sy-dbcnt } products inserted successfully!| ).
     ELSE.
       ".. Print success message
       out->write( |Error writing products.| ).
-    ENDIF.   
-    
+    ENDIF.
+
     ".. Inventory
     ".. Fill internal table
     lt_zinventory = VALUE #( ( upc        = 'P001'
                                stock_type = 'UR'
                                stock      = 1200 )
-                               
+
                              ( upc        = 'P002'
                                stock_type = 'UR'
                                stock      = 3400 ) ).
@@ -91,25 +91,25 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
     ELSE.
       ".. Print success message
       out->write( |Error writing inventory.| ).
-    ENDIF.   
-    
+    ENDIF.
+
     ".. PO Head
     ".. Fill internal table
     lt_zpo_head = VALUE #( ( po_number     = 'PO001'
                              supplier_code = 'S001'
-                             po_date       = '20201201'
+                             po_date       = '20201001'
                              destination   = 'Mumbai' )
-                             
+
                            ( po_number     = 'PO002'
                              supplier_code = 'S001'
                              po_date       = '20201210'
                              destination   = 'Chennai' )
-                             
+
                            ( po_number     = 'PO003'
                              supplier_code = 'S002'
-                             po_date       = '20201211'
+                             po_date       = '20200911'
                              destination   = 'Mumbai' )
-                             
+
                            ( po_number     = 'PO004'
                              supplier_code = 'S002'
                              po_date       = '20201101'
@@ -124,25 +124,57 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
     ELSE.
       ".. Print success message
       out->write( |Error writing PO Head.| ).
-    ENDIF.   
-    
+    ENDIF.
+
     ".. PO Items
     ".. Fill internal table
     lt_zpo_item = VALUE #( ( po_number = 'PO001'
                              po_item   = '000001'
                              upc       = 'P001'
                              qty       = 300
-                             del_date  = '20210201'
+                             del_date  = '20201201'
                              price     = 20
-                             currency  = EUR )
-                             
+                             currency  = 'EUR' )
+
                            ( po_number = 'PO001'
                              po_item   = '000002'
                              upc       = 'P002'
                              qty       = 150
-                             del_date  = '20210201'
+                             del_date  = '20201201'
                              price     = 25
-                             currency  = EUR ) ).
+                             currency  = 'EUR' )
+
+                           ( po_number = 'PO002'
+                             po_item   = '000001'
+                             upc       = 'P001'
+                             qty       = 200
+                             del_date  = '20210211'
+                             price     = 20
+                             currency  = 'EUR' )
+
+                           ( po_number = 'PO003'
+                             po_item   = '000001'
+                             upc       = 'P002'
+                             qty       = 210
+                             del_date  = '20201212'
+                             price     = 22
+                             currency  = 'EUR' )
+
+                           ( po_number = 'PO004'
+                             po_item   = '000001'
+                             upc       = 'P001'
+                             qty       = 410
+                             del_date  = '20210101'
+                             price     = 24
+                             currency  = 'EUR' )
+
+                           ( po_number = 'PO004'
+                             po_item   = '000002'
+                             upc       = 'P002'
+                             qty       = 100
+                             del_date  = '20210112'
+                             price     = 29
+                             currency  = 'EUR' ) ).
     ".. Delete existing data
     DELETE FROM zpo_item.
     ".. Insert new data
@@ -153,136 +185,125 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
     ELSE.
       ".. Print success message
       out->write( |Error writing PO Items| ).
-    ENDIF.   
-    
-        ".. Products
+    ENDIF.
+
+    ".. ASN Head
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zasn_head = VALUE #( ( asn_number    = 'ASN001'
+                              supplier_code = 'S001'
+                              asn_date      = '20201215'
+                              destination   = 'Chennai'
+                              expected_gr   = '20210311' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zasn_head.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zasn_head FROM TABLE @lt_zasn_head.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } ASN Head inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
+      out->write( |Error writing ASN Head.| ).
+    ENDIF.
+
+    ".. ASN Item
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zasn_item = VALUE #( ( asn_number = 'ASN001'
+                              asn_item   = '000001'
+                              po_number  = 'PO002'
+                              po_item    = '000001'
+                              upc        = 'P001'
+                              asn_qty    = 180 ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zasn_item.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zasn_item FROM TABLE @lt_zasn_item.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } ASN Item inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
+      out->write( |Error writing ASN Item.| ).
+    ENDIF.
+
+    ".. GR Head
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zgr_head = VALUE #( ( gr_number     = 'GR001'
+                             creation_date = '20201215'
+                             gr_date       = '20210311'
+                             supplier_code = 'S001' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zgr_head.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zgr_head FROM TABLE @lt_zgr_head.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } GR Head inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
+      out->write( |Error writing GR Head.| ).
+    ENDIF.
+
+    ".. GR Item
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zgr_item = VALUE #( ( gr_number = 'GR001'
+                             gr_item   = '000001'
+                             po_number = 'PO002'
+                             po_item   = '000001'
+                             gr_qty    = '180'
+                             upc       = 'P001' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zgr_item.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zgr_item FROM TABLE @lt_zgr_item.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } GR Item inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
+      out->write( |Error writing GR Item.| ).
+    ENDIF.
+
+    ".. Invoice Header
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zinvoice_head = VALUE #( ( invoice_number = 'INV001'
+                                  invoice_date   = '20201220'
+                                  status         = 'REJECTED'
+                                  supplier_code  = 'S001' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zinvoice_head.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zinvoice_head FROM TABLE @lt_zinvoice_head.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } Invoice Head inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
+      out->write( |Error writing Invoice Head.| ).
+    ENDIF.
+
+    ".. Invoice Item
     ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
+    lt_zinvoice_item = VALUE #( ( invoice_number = 'INV001'
+                                  invoice_item   = '000001'
+                                  upc            = 'P001'
+                                  qty            = 200
+                                  po_number      = 'P002'
+                                  po_item        = '000001'
+                                  invoice_cost   = 25
+                                  currency       = 'EUR' ) ).
     ".. Delete existing data
-    DELETE FROM zsuppliers.
+    DELETE FROM zinvoice_item.
     ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
+    INSERT zinvoice_item FROM TABLE @lt_zinvoice_item.
     IF sy-subrc = 0.
       ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
+      out->write( |{ sy-dbcnt } Invoice Item inserted successfully!| ).
     ELSE.
       ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
-    ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
-    ".. Delete existing data
-    DELETE FROM zsuppliers.
-    ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
-    IF sy-subrc = 0.
-      ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
-    ELSE.
-      ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-    
-        ".. Products
-    ".. Fill internal table
-    lt_zproduct = VALUE #( ( )
-                             (  ) ).
-    ".. Delete existing data
-    DELETE FROM zsuppliers.
-    ".. Insert new data
-    INSERT zsuppliers FROM TABLE @lt_zsuppliers.
-    IF sy-subrc = 0.
-      ".. Print success message
-      out->write( |{ sy-dbcnt } suppliers inserted successfully!| ).
-    ELSE.
-      ".. Print success message
-      out->write( |Error writing suppliers/| ).
-    ENDIF.   
-     
+      out->write( |Error writing Invoice Item.| ).
+    ENDIF.
+
   ENDMETHOD.
 
 ENDCLASS.
