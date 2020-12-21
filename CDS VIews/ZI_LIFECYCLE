@@ -1,0 +1,110 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'LifeCycle CDS'
+define root view entity ZI_LIFECYCLE
+  as select from    zpo_item
+
+  //ASN
+    left outer join zasn_item     on  zasn_item.po_number = zpo_item.po_number
+                                  and zasn_item.po_item   = zpo_item.po_item
+
+    left outer join zasn_head     on zasn_item.asn_number = zasn_head.asn_number
+
+  //GR
+    left outer join zgr_item      on  zgr_item.po_number = zpo_item.po_number
+                                  and zgr_item.po_item   = zpo_item.po_item
+
+    left outer join zgr_head      on zgr_item.gr_number = zgr_head.gr_number
+
+  //Invoice
+    left outer join zinvoice_item on  zinvoice_item.po_number = zpo_item.po_number
+                                  and zinvoice_item.po_item   = zpo_item.po_item
+
+    left outer join zinvoice_head on zinvoice_head.invoice_number = zinvoice_item.invoice_number
+
+
+{
+
+
+
+      //PO Details
+      @EndUserText.label: 'PO Number'
+      @UI.lineItem: [{ position: 10 }]
+  key zpo_item.po_number         as PONumber,
+
+      @EndUserText.label: 'PO Item'
+      @UI.lineItem: [{ position: 20 }]
+  key zpo_item.po_item           as POItem,
+
+      @EndUserText.label: 'PO Qty'
+      @UI.lineItem: [{ position: 60 }]
+      zpo_item.qty               as POQty,
+
+      @EndUserText.label: 'PO Del Date'
+      @UI.lineItem: [{ position: 30 }]
+      zpo_item.del_date          as PODelDate,
+
+      @EndUserText.label: 'PO Price'
+      @Semantics.amount.currencyCode: 'Currency'
+      @UI.lineItem: [{ position: 110 }]
+      zpo_item.price             as POPrice,
+
+      @EndUserText.label: 'Currency'
+      zpo_item.currency          as Currency,
+
+      //ASN Details
+      @EndUserText.label: 'ASN Number'
+      zasn_item.asn_number       as ASNNumber,
+
+      @EndUserText.label: 'ASN Item'
+      zasn_item.asn_item         as ASNItem,
+
+      @EndUserText.label: 'ASN Qty'
+      @UI.lineItem: [{ position: 70 }]
+      zasn_item.asn_qty          as ASNQty,
+
+      @EndUserText.label: 'Expected GR'
+      @UI.lineItem: [{ position: 40 }]
+      zasn_head.expected_gr      as ASNDate,
+
+      //GR Details
+      @EndUserText.label: 'GR Number'
+      zgr_item.gr_number         as GRNumber,
+
+      @EndUserText.label: 'GR Item'
+      zgr_item.gr_item           as GRItem,
+
+      @EndUserText.label: 'GR Qty'
+      @UI.lineItem: [{ position: 80 }]
+      zgr_item.gr_qty            as GRQty,
+
+      @EndUserText.label: 'GR Date'
+      @UI.lineItem: [{ position: 50 }]
+      zgr_head.gr_date           as GRDate,
+
+      //Invoice Details
+      @EndUserText.label: 'Invoice Status'
+      @UI.lineItem: [{ position: 100 }]
+      zinvoice_head.status       as InvoiceStatus,
+
+      @EndUserText.label: 'Invoice Qty'
+      @UI.lineItem: [{ position: 90 }]
+      zinvoice_item.qty          as InvoiceQty,
+
+      @EndUserText.label: 'Invoice Cost'
+      @UI.lineItem: [{ position: 120 }]
+      zinvoice_item.invoice_cost as InvoiceCost,
+
+      //Basic Details
+      @UI.selectionField: [{ position: 10 }]
+      @EndUserText.label: 'Supplier'
+      zasn_head.supplier_code    as SupplierCode,
+
+      @UI.selectionField: [{ position: 20 }]
+      @EndUserText.label: 'Destination'
+      zasn_head.destination      as Destination,
+
+      @UI.selectionField: [{ position: 30 }]
+      @EndUserText.label: 'UPC'
+      zpo_item.upc               as Upc
+
+}
