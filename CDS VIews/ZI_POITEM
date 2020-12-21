@@ -1,0 +1,17 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CDS for PO Item'
+define root view entity ZI_POITEM as select from zpo_item as poItem
+
+association [1..1] to zpo_head as _poHead
+on  _poHead.po_number = poItem.po_number
+
+{
+    key poItem.po_number as PoNumber,
+    key poItem.po_item as PoItem,
+    poItem.upc as Upc,
+    poItem.qty as Qty,
+    poItem.del_date as DelDate,
+    poItem.price as Price,
+    poItem.currency as Currency,
+    _poHead    
+}
