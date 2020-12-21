@@ -1,0 +1,68 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Discrepancies CDS'
+define root view entity ZI_DISCREPANCY
+  as select from ZI_LIFECYCLE
+
+{
+
+      @EndUserText.label: 'PO Number'
+      @UI.lineItem: [{ position: 10 }]
+  key PONumber,
+
+      @EndUserText.label: 'PO Item'
+      @UI.lineItem: [{ position: 20 }]
+  key POItem,
+
+
+      @EndUserText.label: 'Supplier'
+      @UI.selectionField: [{ position: 10 }]
+      SupplierCode,
+
+      @EndUserText.label: 'Destination'
+      @UI.selectionField: [{ position: 20 }]
+      Destination,
+
+      @EndUserText.label: 'UPC'
+      @UI.selectionField: [{ position: 30 }]
+      Upc,
+
+      @EndUserText.label: 'Pricing Discr.'
+      case when POPrice != InvoiceCost then 'Yes'
+           else '' end   as PricingDiscr,
+
+      @EndUserText.label: 'Pricing Discr. Value'
+      @UI.lineItem: [{ position: 30 }]
+      case when POPrice != InvoiceCost then (cast(InvoiceCost as abap.dec( 10, 3 ) ) - cast(POPrice as abap.dec( 10, 3 ) ) )
+           else 0 end    as PricingDiscrValue,
+
+      @EndUserText.label: 'Shipped Qty Discr.'
+      case when POQty != ASNQty  then 'Yes'
+      else '' end        as ShippedQtyDiscr,
+
+      @EndUserText.label: 'Shipped Qty Discr. Value'
+      @UI.lineItem: [{ position: 40 }]
+      case when POQty != ASNQty then (ASNQty - POQty)
+           else 0 end    as ShippedQtyDiscrValue,
+
+      @EndUserText.label: 'Invoice Qty Discr.'
+      case when POQty != InvoiceQty  then 'Yes'
+      else '' end        as InvoiceQtyDiscr,
+      
+      @EndUserText.label: 'Invoice Qty Discr. Value'
+      @UI.lineItem: [{ position: 50 }]      
+      case when POQty != InvoiceQty  then (InvoiceQty - POQty)
+      else 0 end        as InvoiceQtyDiscrValue,      
+
+      @EndUserText.label: 'On Time Ind.'
+      @UI.lineItem: [{ position: 60 }]
+      case when PODelDate < ASNDate then 'Delayed'
+      when PODelDate > ASNDate then 'Early'
+      else 'On Time' end as DateDiscr
+
+
+}
+where
+     POPrice != InvoiceCost
+  or POQty != ASNQty
+  or POQty != InvoiceQty
+  or PODelDate != ASNDate
