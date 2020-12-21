@@ -1,0 +1,17 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CDS for ASN'
+define root view entity ZI_ASN as select from zasn_head
+
+// associations
+association [0..*] to zasn_item as _asn_item on $projection.asn_number = _asn_item.asn_number
+
+ {
+    key zasn_head.asn_number,
+    supplier_code,
+    asn_date,
+    destination,
+    expected_gr,
+    
+    // associations
+    _asn_item 
+}
