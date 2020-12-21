@@ -1,0 +1,15 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CDS for Future Stock'
+define root view entity ZI_FUTURE_STOCK
+  as select from ZI_POITEM
+
+{
+
+    key _poHead.destination,
+    key _poHead.supplier_code,
+    key Upc,
+    key DelDate,
+        @Aggregation.default: #SUM
+        Qty
+
+} where DelDate > $session.system_date 
