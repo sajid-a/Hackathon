@@ -16,17 +16,22 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
   METHOD if_oo_adt_classrun~main.
 
     ".. Declare tables
-    DATA: lt_zsuppliers    TYPE TABLE OF zsuppliers,
-          lt_zproduct      TYPE TABLE OF zproduct,
-          lt_zasn_head     TYPE TABLE OF zasn_head,
-          lt_zasn_item     TYPE TABLE OF zasn_item,
-          lt_zgr_head      TYPE TABLE OF zgr_head,
-          lt_zgr_item      TYPE TABLE OF zgr_item,
-          lt_zinventory    TYPE TABLE OF zinventory,
-          lt_zinvoice_head TYPE TABLE OF zinvoice_head,
-          lt_zinvoice_item TYPE TABLE OF zinvoice_item,
-          lt_zpo_head      TYPE TABLE OF zpo_head,
-          lt_zpo_item      TYPE TABLE OF zpo_item.
+    DATA: lt_zsuppliers     TYPE TABLE OF zsuppliers,
+          lt_zproduct       TYPE TABLE OF zproduct,
+          lt_zasn_head      TYPE TABLE OF zasn_head,
+          lt_zasn_item      TYPE TABLE OF zasn_item,
+          lt_zgr_head       TYPE TABLE OF zgr_head,
+          lt_zgr_item       TYPE TABLE OF zgr_item,
+          lt_zinventory     TYPE TABLE OF zinventory,
+          lt_zinvoice_head  TYPE TABLE OF zinvoice_head,
+          lt_zinvoice_item  TYPE TABLE OF zinvoice_item,
+          lt_zpo_head       TYPE TABLE OF zpo_head,
+          lt_zpo_item       TYPE TABLE OF zpo_item,
+          lt_kpis           TYPE TABLE OF zkpi,
+          lt_recommendation TYPE TABLE OF zrecommendations,
+          lt_supp_issue     TYPE TABLE OF zsup_issue,
+          lt_quick_links    TYPE TABLE OF zquick_links,
+          lt_worklist       TYPE TABLE OF zworklist.
 
     ".. Suppliers
     ".. Fill internal table
@@ -74,13 +79,25 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
 
     ".. Inventory
     ".. Fill internal table
-    lt_zinventory = VALUE #( ( upc        = 'P001'
-                               stock_type = 'UR'
-                               stock      = 1200 )
+    lt_zinventory = VALUE #( ( upc         = 'P001'
+                               stock_type  = 'UR'
+                               destination = 'Mumbai'
+                               stock       = 1200 )
 
-                             ( upc        = 'P002'
-                               stock_type = 'UR'
-                               stock      = 3400 ) ).
+                             ( upc         = 'P002'
+                               stock_type  = 'UR'
+                               destination = 'Mumbai'
+                               stock       = 3400 )
+
+                             ( upc         = 'P001'
+                               stock_type  = 'UR'
+                               destination = 'Chennai'
+                               stock       = 1200 )
+
+                             ( upc         = 'P002'
+                               stock_type  = 'UR'
+                               destination = 'Chennai'
+                               stock       = 2000 ) ).
     ".. Delete existing data
     DELETE FROM zinventory.
     ".. Insert new data
@@ -288,7 +305,7 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
                                   invoice_item   = '000001'
                                   upc            = 'P001'
                                   qty            = 200
-                                  po_number      = 'P002'
+                                  po_number      = 'PO002'
                                   po_item        = '000001'
                                   invoice_cost   = 25
                                   currency       = 'EUR' ) ).
@@ -303,6 +320,133 @@ CLASS zcl_generate_test_data IMPLEMENTATION.
       ".. Print success message
       out->write( |Error writing Invoice Item.| ).
     ENDIF.
+
+
+    ".. KPIs
+    ".. Fill internal table
+    lt_kpis = VALUE #( ( supplier_code = 'S001'
+                         destination   = 'Mumbai'
+                         kpi           = 'Supplier Health'
+                         kpi_value     = '10' )
+                       ( supplier_code = 'S001'
+                         destination   = 'Mumbai'
+                         kpi           = 'OnTime Delivery'
+                         kpi_value     = '90' )
+                       ( supplier_code = 'S002'
+                         destination   = 'Chennai'
+                         kpi           = 'Supplier Health'
+                         kpi_value     = '7' )
+                       ( supplier_code = 'S002'
+                         destination   = 'Chennai'
+                         kpi           = 'OnTime Delivery'
+                         kpi_value     = '70' ) ).
+    ".. Delete existing data
+    DELETE FROM zkpi.
+    ".. Insert new data
+    INSERT zkpi FROM TABLE @lt_kpis.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } KPIs inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing KPIs.| ).
+    ENDIF.
+
+    ".. Recommendations
+    ".. Fill internal table
+    lt_recommendation = VALUE #( ( supplier_code = 'S001'
+                                   destination   = 'Mumbai'
+                                   upc           = 'P001'
+                                   description   = 'Change Supplier to ABC Inc for Full Shirt' )
+                                 ( supplier_code = 'S002'
+                                   destination   = 'Chennai'
+                                   upc           = 'P002'
+                                   description   = 'Analyze Route for Vedanta to check for delays' ) ).
+    ".. Delete existing data
+    DELETE FROM zrecommendations.
+    ".. Insert new data
+    INSERT zrecommendations FROM TABLE @lt_recommendation.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } Recommendations inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing Recommendations.| ).
+    ENDIF.
+
+    ".. Supplier Issues
+    ".. Fill internal table
+    lt_supp_issue = VALUE #( ( supplier_code = 'S001'
+                               destination   = 'Mumbai'
+                               upc           = 'P001'
+                               id            = '01'
+                               issue         = 'GR Qty less than PO Qty'
+                               price         = '100000'
+                               currency      = 'EUR' )
+                             ( supplier_code = 'S002'
+                               destination   = 'Chennai'
+                               id            = '02'
+                               issue         = 'Vedanta has issues connecting to portal' ) ).
+    ".. Delete existing data
+    DELETE FROM zsup_issue.
+    ".. Insert new data
+    INSERT zsup_issue FROM TABLE @lt_supp_issue.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } Supplier Issues inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing Supplier Issues.| ).
+    ENDIF.
+
+    ".. Quick Links
+    ".. Fill internal table
+    lt_quick_links = VALUE #( ( id = '01'
+                                description = 'Supplier Portal' )
+                              ( id = '02'
+                                description = 'Incident Managerment System' )
+                              ( id = '03'
+                                description = 'Service Now' )
+                              ( id = '04'
+                                description = 'Google' )
+                              ( id = '05'
+                                description = 'JIRA' ) ).
+    ".. Delete existing data
+    DELETE FROM zquick_links.
+    ".. Insert new data
+    INSERT zquick_links FROM TABLE @lt_quick_links.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } Quick Links inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing Quick Links.| ).
+    ENDIF.
+
+    ".. Worklist
+    ".. Fill internal table
+    lt_worklist = VALUE #( ( supplier_code = 'S001'
+                             destination   = 'Mumbai'
+                             upc           = 'P001'
+                             id            = '01'
+                             worklist      = 'Activate ABC in Supplier Portal' )
+                           ( supplier_code = 'S001'
+                             destination   = 'Mumbai'
+                             upc           = 'P002'
+                             id            = '01'
+                             worklist      = 'Maintain Article List for Vedanta' ) ).
+    ".. Delete existing data
+    DELETE FROM zworklist.
+    ".. Insert new data
+    INSERT zworklist FROM TABLE @lt_worklist.
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } Worklist inserted successfully!| ).
+    ELSE.
+      ".. Print success message
+      out->write( |Error writing Worklist.| ).
+    ENDIF.
+
 
   ENDMETHOD.
 
