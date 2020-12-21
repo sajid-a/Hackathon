@@ -1,0 +1,18 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CDS for Invoice'
+define root view entity ZI_Invoice
+  as select from zinvoice_head
+
+  //associations
+  association [0..*] to zinvoice_item as _invoice_item on $projection.invoice_number = _invoice_item.invoice_number
+
+{
+
+  key zinvoice_head.invoice_number,
+      invoice_date,
+      status,
+      supplier_code,
+
+      //associations
+      _invoice_item
+}
