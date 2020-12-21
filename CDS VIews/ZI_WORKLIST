@@ -1,0 +1,17 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Worklist'
+define root view entity ZI_WORKLIST as select from zworklist {
+    
+    @EndUserText.label: 'Supplier'
+    key supplier_code as SupplierCode,
+    
+    @EndUserText.label: 'Destination'
+    key destination as Destination,
+    
+    @EndUserText.label: 'UPC'
+    key upc as Upc,
+    
+    @EndUserText.label: 'Action'
+    worklist as Worklist
+    
+}
