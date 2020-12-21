@@ -1,0 +1,54 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Supplier Issue'
+define root view entity ZI_SUPISSUE
+  as select from zsup_issue
+  
+  association [0..1] to ZI_SUPPLIERS as _supplier
+   on $projection.SupplierCode = _supplier.SupplierCode
+   
+  association [0..1] to zi_product as _product
+   on $projection.Upc = _product.Upc 
+
+{
+      @EndUserText.label: 'Supplier'
+      @UI.selectionField: [{ position: 10 }]
+      @UI.lineItem: [{ position: 10 }]
+      @ObjectModel.text.association: '_supplier'
+  key supplier_code as SupplierCode,
+
+      @EndUserText.label: 'Destination'
+      @UI.selectionField: [{ position: 20 }]
+      @UI.lineItem: [{ position: 20 }]
+  key destination   as Destination,
+
+      @EndUserText.label: 'UPC'
+      @UI.selectionField: [{ position: 30 }]
+      @UI.lineItem: [{ position: 30 }]
+      @ObjectModel.text.association: '_product'
+  key upc           as Upc,
+  key id            as Id,
+
+      @EndUserText.label: 'Issue'
+      @UI.lineItem: [{ position: 30 }]
+      issue         as Issue,
+
+      @EndUserText.label: 'Amount'
+      @Semantics.amount.currencyCode: 'Currency'
+      @UI.lineItem: [{ position: 40 }] 
+      @UI.dataPoint:{
+          title: 'Price',
+          criticalityCalculation: {
+          improvementDirection: #TARGET,
+          toleranceRangeLowValue: 8,
+          deviationRangeHighValue: 10
+          }
+      }
+      price         as Price,
+
+      currency      as Currency,
+      
+       
+      
+      _supplier,
+      _product
+}
