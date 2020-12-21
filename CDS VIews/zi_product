@@ -1,0 +1,16 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Products'
+
+@ObjectModel.dataCategory: #TEXT
+
+define root view entity zi_product
+  as select from zproduct
+{
+
+  key upc  as Upc,
+
+      @Semantics.text: true
+      name as Name,
+      type as Type
+
+}
