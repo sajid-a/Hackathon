@@ -1,0 +1,12 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Recommendations'
+define root view entity ZI_RECOMMENDATIONS as select from zrecommendations
+{
+    
+    key supplier_code as SupplierCode,
+    key destination as Destination,
+    key upc as Upc,
+    key id as Id,
+    description as Description
+
+}
