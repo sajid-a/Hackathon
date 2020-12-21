@@ -1,0 +1,10 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Quick Links'
+define root view entity ZI_QUICK_LINKS
+  as select from zquick_links
+{
+
+  key id          as Id,
+      description as Description
+
+}
