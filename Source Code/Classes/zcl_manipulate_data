@@ -1,0 +1,23 @@
+CLASS zcl_manipulate_data DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+    INTERFACES if_oo_adt_classrun.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_manipulate_data IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    DELETE FROM zpo_item.
+    out->write( |{ sy-subrc }| ).
+    IF sy-subrc = 0.
+      ".. Print success message
+      out->write( |{ sy-dbcnt } updated successfully!| ).
+    ENDIF.
+  ENDMETHOD.
+ENDCLASS.
