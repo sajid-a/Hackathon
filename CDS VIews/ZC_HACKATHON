@@ -1,0 +1,191 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Hackathon Main CDS'
+
+@UI: {
+ headerInfo: { typeName: 'iVendor', typeNamePlural: 'iVendor' } }
+
+@Search.searchable: true
+
+@UI.selectionPresentationVariant:[
+    {   //kpi
+        qualifier: 'StockByDestination',
+        presentationVariantQualifier: 'pvStockByDestination',
+        selectionVariantQualifier: 'svStockByDestination'
+    },
+    {  //chart and table
+        qualifier: 'Default',
+        presentationVariantQualifier: 'Default',
+        selectionVariantQualifier: 'Default'
+    }
+]
+   
+   
+@UI.presentationVariant:[
+    {   //kpi
+        qualifier: 'pvStockByDestination',
+        text: 'Stock By Destination',
+        visualizations: [{
+            type: #AS_CHART,
+            qualifier: 'cqStockByDestination'
+        },{
+            type: #AS_DATAPOINT,
+            qualifier: 'Stock'
+        }]
+    },
+    {   //visual filter
+        qualifier: 'pvFilterByDestination',
+        text: 'Filter: By Destination',
+        sortOrder: [{ by: 'Destination', direction: #DESC }] ,
+        visualizations: [{
+            type: #AS_CHART,
+            qualifier: 'ChartByDestination'
+        }]
+    },
+    {   //visual filter
+        qualifier: 'pvFilterByUPC',
+        text: 'Filter: By UPC',
+        sortOrder: [{ by: 'Upc', direction: #DESC }] ,
+        visualizations: [{
+            type: #AS_CHART,
+            qualifier: 'ChartByUPC'
+        }]
+    },
+    { //main area chart
+        qualifier: 'Default',
+        sortOrder: [{ by: 'Stock' , direction: #DESC }] ,
+        visualizations: [{
+            type: #AS_CHART,
+            qualifier: 'ChartDefault'
+        }]
+    }
+]
+ 
+@UI.selectionVariant:[
+    { //kpi
+        qualifier: 'svStockByDestination',
+        text: 'Stock By Destination'
+    },
+    { //main area
+        qualifier: 'Default',
+        text: 'Default'
+    }
+]
+ 
+@UI.chart: [
+    { //kpi
+        qualifier: 'cqStockByDestination',
+        chartType: #COLUMN,
+        dimensions:  [ 'Destination' ],
+        measures:  [ 'Stock' ],
+        dimensionAttributes: [{
+            dimension: 'Destination',
+            role: #CATEGORY
+        }],
+        measureAttributes: [{
+            measure: 'Stock',
+            role: #AXIS_1
+        }]
+    },
+    {   //visual filter
+        qualifier: 'ChartByDestination',
+        chartType: #BAR,
+        dimensions:  [ 'Destination' ],
+        measures:  [ 'Stock' ],
+        dimensionAttributes: [{
+            dimension: 'Destination',
+            role: #CATEGORY
+        }],
+        measureAttributes: [{
+            measure: 'Stock',
+            role: #AXIS_1
+        }]
+    },
+    {   //visual filter
+        qualifier: 'ChartByUPC',
+        chartType: #DONUT,
+        dimensions:  [ 'Upc' ],
+        measures:  [ 'Stock' ],
+        dimensionAttributes: [{
+            dimension: 'Upc',
+            role: #CATEGORY
+        }],
+        measureAttributes: [{
+            measure: 'Stock',
+            role: #AXIS_1
+        }]
+    },
+    {
+        qualifier: 'ChartDefault',
+        chartType: #COLUMN,
+        dimensions:  [ 'Destination','Upc' ],
+        measures:  [ 'Stock' ],
+        dimensionAttributes: [{
+            dimension: 'Destination',
+            role: #SERIES
+        },{
+            dimension: 'Destination',
+            role: #CATEGORY
+        }],
+        measureAttributes: [{
+            measure: 'Stock',
+            role: #AXIS_1
+        }]
+    }
+]
+   
+define root view entity ZC_HACKATHON
+  as select from zinventory
+
+  //associations
+  association [0..*] to ZI_PO      as _active_pos on  $projection.Destination  = _active_pos.destination
+
+  association [0..1] to zi_product as _upc_vhp    on  $projection.Upc = _upc_vhp.Upc
+
+
+{
+
+      @UI.facet: [
+        {
+          id:       'Inventory',
+          purpose:  #STANDARD,
+          type:     #CHART_REFERENCE,
+          label:    'UPC',
+          position: 10 }
+      ]
+
+      @EndUserText.label: 'UPC'
+      @ObjectModel.foreignKey.association: '_upc_vhp'
+      @UI.lineItem: [{ position: 20 }]
+      @UI.selectionField: [{ position: 30 }]
+      @UI.identification: [{ position: 20 }]
+  key upc           as Upc,
+
+      @Search.defaultSearchElement: true
+
+      @EndUserText.label: 'Destination'
+      @Consumption.filter.selectionType: #SINGLE
+      @UI.lineItem: [{ position: 10 }]
+      @UI.selectionField: [{ position: 20 }]
+      @UI.identification: [{ position: 10 }]
+  key destination   as Destination,
+
+      @EndUserText.label: 'Supplier'
+
+      @UI.selectionField: [{ position: 10 }]
+      @UI.identification: [{ position: 30 }]
+  key _active_pos.supplier_code as SupplierCode,
+
+      @EndUserText.label: 'StockType'
+  key stock_type    as StockType,
+
+      @Aggregation.default: #SUM
+      @EndUserText.label: 'Stock'
+      @UI.lineItem: [{ position: 40 }]
+      stock         as Stock,
+
+      //associations
+      _active_pos,
+      _upc_vhp
+
+
+}
