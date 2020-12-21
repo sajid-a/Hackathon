@@ -1,0 +1,16 @@
+@EndUserText.label : 'KPI'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zkpi {
+  key client        : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key supplier_code : zchar10 not null
+    with foreign key zsuppliers
+      where supplier_code = zkpi.supplier_code;
+  key destination   : zchar40 not null;
+  key kpi           : abap.char(20) not null;
+  kpi_value         : abap.dec(5,3);
+
+}
