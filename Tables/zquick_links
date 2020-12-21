@@ -1,0 +1,11 @@
+@EndUserText.label : 'Quick Links'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zquick_links {
+  key client  : abap.clnt not null;
+  key id      : zchar10 not null;
+  description : zchar40;
+
+}
