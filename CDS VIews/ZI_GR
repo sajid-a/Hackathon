@@ -1,0 +1,18 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CDS for PO'
+define root view entity ZI_GR
+  as select from zgr_head
+
+  // associations
+  association [0..*] to zgr_item as _gr_item on $projection.gr_number = _gr_item.gr_number
+
+{
+
+  key zgr_head.gr_number,
+      creation_date,
+      gr_date,
+      supplier_code,
+
+      //associations
+      _gr_item
+}
