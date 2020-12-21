@@ -1,0 +1,18 @@
+@EndUserText.label: 'Hackathon main Service Definition'
+define service ZUI_C_HACKATHON {
+  expose ZC_HACKATHON as Inventory;
+  expose ZI_ASN as AdvanceShippingNotification;
+  expose ZI_GR as GoodsReceipt;
+  expose ZI_Invoice as Invoice;
+  expose ZI_PO as PurchaseOrder;
+  expose ZI_FUTURE_STOCK as FutureStock;
+  expose ZI_SUPISSUE as SupplierIssue;
+  expose ZI_KPI as KPI;
+  expose ZI_QUICK_LINKS as QuickLinks;
+  expose ZI_RECOMMENDATIONS as Recommendations;
+  expose zi_product as Products;
+  expose ZI_SUPPLIERS as Suppliers;
+  expose ZI_DISCREPANCY as Discrepancies;
+  expose ZI_LIFECYCLE as LifeCycle;
+  expose ZI_WORKLIST as WorkList;
+}
