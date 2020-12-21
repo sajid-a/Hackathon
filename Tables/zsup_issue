@@ -1,0 +1,23 @@
+@EndUserText.label : 'Supplier Issues'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zsup_issue {
+  key client        : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key supplier_code : zchar10 not null
+    with foreign key zsuppliers
+      where supplier_code = zsup_issue.supplier_code;
+  key destination   : zchar40 not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key upc           : zchar10 not null
+    with foreign key zproduct
+      where upc = zsup_issue.upc;
+  key id            : zchar10 not null;
+  issue             : zstring;
+  @Semantics.amount.currencyCode : 'zsup_issue.currency'
+  price             : abap.curr(10,3);
+  currency          : abap.cuky;
+
+}
