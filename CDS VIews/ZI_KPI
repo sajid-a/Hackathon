@@ -1,0 +1,22 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'KPI'
+define root view entity ZI_KPI
+  as select from zkpi
+
+{
+  key supplier_code as SupplierCode,
+  key destination   as Destination,
+      @UI.lineItem: [{ position: 10, label: 'KPI', qualifier: 'KPIcard' }]
+  key kpi           as Kpi,
+      @Aggregation.default: #SUM
+      @UI.dataPoint:{
+          title: 'Value',
+          criticalityCalculation: {
+          improvementDirection: #TARGET,
+          toleranceRangeLowValue: 8,
+          deviationRangeHighValue: 10
+          }
+      }
+      @UI.lineItem: [{ position: 20,label: 'KPI Value',qualifier: 'KPIcard',type: #AS_DATAPOINT }]
+      kpi_value     as KpiValue
+}
