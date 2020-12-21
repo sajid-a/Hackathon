@@ -1,0 +1,28 @@
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Suppliers'
+
+@ObjectModel.dataCategory: #TEXT
+
+define root view entity ZI_SUPPLIERS
+  as select from zsuppliers
+{
+
+      @EndUserText.label: 'Supplier Code'
+      @UI.selectionField: [{ position: 10 }]
+      @UI.lineItem: [{ position: 10 }]
+  key supplier_code       as SupplierCode,
+      
+      @Semantics.text: true
+      @EndUserText.label: 'Name'
+      @UI.selectionField: [{ position: 20 }]
+      @UI.lineItem: [{ position: 20 }]
+      name                as Name,
+      
+      @EndUserText.label: 'Avg. Lead Time'
+      @UI.lineItem: [{ position: 30 }]
+      avg_lead_time       as AvgLeadTime,
+      
+      @EndUserText.label: 'Average Price Variation'
+      @UI.lineItem: [{ position: 40 }]
+      avg_price_variation as AvgPriceVariation
+}
