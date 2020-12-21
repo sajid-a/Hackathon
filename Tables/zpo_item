@@ -16,7 +16,8 @@ define table zpo_item {
       where upc = zpo_item.upc;
   qty           : int4;
   del_date      : abap.dats;
-  price         : abap.int4;
+  @Semantics.amount.currencyCode : 'zpo_item.currency'
+  price         : abap.curr(10,3);
   currency      : abap.cuky;
 
 }
